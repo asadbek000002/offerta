@@ -1,0 +1,50 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+
+# Static and media (do not copy during build, use volumes)
+media/
+staticfiles/
+media/
+mediafiles/
+
+# Local environment & secrets
+.env
+*.env
+*.local
+
+# SQLite (local only)
+db.sqlite3
+
+# Git
+.git/
+.gitignore
+
+# Logs & pids
+*.log
+*.pid
+
+# Temp & system
+*.swp
+*.swo
+*.DS_Store
+*.bak
+*.tmp
+
+# Editor
+.vscode/
+.idea/
+*.iml
+
+# Docker-specific
+Dockerfile*
+docker-compose*.yml

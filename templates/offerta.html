@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Shartnoma</title>
+  <link rel="icon" href="{% static 'images/Group.svg' %}" type="image/svg+xml">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #eceff1; /* orqa fon kulrang */
+    }
+    header {
+      position: sticky; /* yuqoriga yopishib qoladi */
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.7); /* yarim shaffof oq */
+      backdrop-filter: blur(8px); /* blur effekti */
+      -webkit-backdrop-filter: blur(8px); /* Safari uchun */
+      padding: 15px 0;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* engil soya */
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #333;
+    }
+    #pdf-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px 0;
+    }
+    .pdf-page {
+      background: #fff; /* oq sahifa */
+      margin: 20px auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* chiroyli soya */
+      border-radius: 6px; /* burchaklarni yumaloqlash */
+      overflow: hidden;
+    }
+    .pdf-page canvas {
+      display: block;
+      width: 100%; /* sahifa eni containerga moslashadi */
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+  </header>
+  <div id="pdf-container"></div>
+  <!-- PDF.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+
+  <script>
+    const url = "{{ pdf_url }}"; // Django’dan PDF yo‘li
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+    // PDF yuklash
+    pdfjsLib.getDocument(url).promise.then(pdfDoc => {
+      const container = document.getElementById('pdf-container');
+
+      for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+        pdfDoc.getPage(pageNum).then(page => {
+          const scale = 1.3; // sahifa kattaligi
+          const viewport = page.getViewport({ scale: scale });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          // Har bir sahifani quti ichiga solamiz
+          const pageWrapper = document.createElement('div');
+          pageWrapper.className = 'pdf-page';
+          pageWrapper.appendChild(canvas);
+          container.appendChild(pageWrapper);
+
+          page.render({ canvasContext: context, viewport: viewport });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
